@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router";
 
 import AppShell from "./app-shell";
 import Dashboard from "./routes/dashboard";
-import Home from "./routes/home";
+import { Home } from "./routes/home";
 
 function NotFound() {
   return (
