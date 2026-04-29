@@ -1,0 +1,27 @@
+{
+  "name": "@whispr/auth",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.9",
+    "@whispr/db": "workspace:*",
+    "@whispr/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@whispr/config": "workspace:*",
+    "typescript": "^6.0.3"
+  }
+}

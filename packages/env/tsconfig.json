@@ -1,0 +1,3 @@
+{
+  "extends": "@whispr/config/tsconfig.base.json"
+}

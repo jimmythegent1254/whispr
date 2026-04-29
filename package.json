@@ -1,0 +1,39 @@
+{
+  "name": "whispr",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "check-types": "pnpm -r --if-present check-types",
+    "dev:native": "pnpm --filter native dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:server": "pnpm --filter server dev",
+    "db:push": "pnpm --filter @whispr/db db:push",
+    "db:studio": "pnpm --filter @whispr/db db:studio",
+    "db:generate": "pnpm --filter @whispr/db db:generate",
+    "db:migrate": "pnpm --filter @whispr/db db:migrate",
+    "db:start": "pnpm --filter @whispr/db db:start",
+    "db:watch": "pnpm --filter @whispr/db db:watch",
+    "db:stop": "pnpm --filter @whispr/db db:stop",
+    "db:down": "pnpm --filter @whispr/db db:down",
+    "check": "oxlint && oxfmt --write"
+  },
+  "dependencies": {
+    "@whispr/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@whispr/config": "workspace:*",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "pnpm@10.33.2"
+}
