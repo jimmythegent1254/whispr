@@ -1,6 +1,11 @@
 export async function createContext() {
   return {
-    session: null,
+    session: {
+      user: {
+        id: "user-1",
+        name: "You",
+      },
+    },
   };
 }
 

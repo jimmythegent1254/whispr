@@ -2,11 +2,14 @@ import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
 import { auth } from "@whispr/auth";
 import { env } from "@whispr/env/server";
+import { seed } from "@whispr/api/seed";
 
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  seed();
 
   app.enableCors({
     origin: env.CORS_ORIGIN,

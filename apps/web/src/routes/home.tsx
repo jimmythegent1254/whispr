@@ -13,8 +13,16 @@ import { MembersDialog } from "@/components/custom/members-dialog";
 import { SettingsDialog } from "@/components/custom/settings-dialog";
 import { NewChatDialog } from "@/components/custom/new-chat-dialog";
 import { Menu, PanelRight } from "lucide-react";
+import { orpc } from "@/utils/orpc";
+import { useQuery } from "@tanstack/react-query";
 
 export function Home() {
+  const privateData = useQuery(
+    orpc.getChannels.queryOptions({ input: { workspaceId: "ws-1" } }),
+  );
+
+  console.log(privateData);
+
   const [conversations, setConversations] = useState<Conversation[]>(
     INITIAL_CONVERSATIONS,
   );

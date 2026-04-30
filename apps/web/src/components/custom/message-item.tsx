@@ -114,7 +114,7 @@ export function MessageItem({
             </div>
           </div>
         ) : (
-          <p className="break-words text-[15px] leading-relaxed text-foreground/95">
+          <p className="wrap-break-word text-[15px] leading-relaxed text-foreground/95">
             {message.content}
             {message.edited && (
               <span className="ml-1 text-[11px] text-muted-foreground">

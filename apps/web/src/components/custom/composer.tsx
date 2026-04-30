@@ -70,7 +70,7 @@ export function Composer({ placeholder, onSend, onHeightChange }: Props) {
             }}
             placeholder={placeholder}
             rows={1}
-            className="block max-h-[200px] w-full resize-none bg-transparent px-3 py-2.5 text-[15px] outline-none placeholder:text-muted-foreground"
+            className="block max-h-50 w-full resize-none bg-transparent px-3 py-2.5 text-[15px] outline-none placeholder:text-muted-foreground"
           />
           <div className="flex items-center justify-between px-2 py-1.5">
             <div className="flex items-center gap-0.5 text-muted-foreground">
