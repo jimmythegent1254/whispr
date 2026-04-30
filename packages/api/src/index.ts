@@ -18,3 +18,11 @@ const requireAuth = o.middleware(async ({ context, next }) => {
 });
 
 export const protectedProcedure = publicProcedure.use(requireAuth);
+
+export type {
+  User,
+  Workspace,
+  Conversation,
+  ConversationMember,
+  Message,
+} from "./store";

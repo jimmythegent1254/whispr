@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Hash, Users, Star, Pin } from "lucide-react";
 import type { Conversation } from "@/lib/chat-data";
-import { USERS, CURRENT_USER_ID } from "@/lib/chat-data";
+import { CURRENT_USER_ID } from "@/lib/chat-data";
+import { useUsers } from "@/lib/user-context";
 import { MessageItem } from "./message-item";
 import { Composer } from "./composer";
 import { formatDay } from "@/lib/format";
@@ -38,9 +39,10 @@ export function ChatArea({
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [conversation.messages.length, conversation.id, typingUserId]);
 
+  const users = useUsers();
   const isDM = conversation.type === "dm";
   const otherUser = isDM
-    ? USERS[conversation.members.find((m) => m !== CURRENT_USER_ID) ?? ""]
+    ? users[conversation.members.find((m) => m !== CURRENT_USER_ID) ?? ""]
     : null;
 
   // Group consecutive messages by same user within 5 mins
@@ -69,7 +71,7 @@ export function ChatArea({
   }
 
   const pinnedCount = conversation.messages.filter((m) => m.pinned).length;
-  const typingUser = typingUserId ? USERS[typingUserId] : null;
+  const typingUser = typingUserId ? users[typingUserId] : null;
 
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col bg-background">

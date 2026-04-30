@@ -9,8 +9,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, UserPlus, Check } from "lucide-react";
-import type { Conversation } from "@/lib/chat-data";
-import { USERS, CURRENT_USER_ID } from "@/lib/chat-data";
+import type { Conversation, User } from "@/lib/chat-data";
+import { CURRENT_USER_ID } from "@/lib/chat-data";
+import { useUsers } from "@/lib/user-context";
 import { initials } from "@/lib/format";
 
 type Props = {
@@ -33,7 +34,8 @@ export function MembersDialog({
     () => new Set(conversation.members),
     [conversation.members],
   );
-  const allUsers = Object.values(USERS);
+  const users = useUsers();
+  const allUsers = Object.values(users) as User[];
 
   const filteredMembers = allUsers.filter(
     (u) =>

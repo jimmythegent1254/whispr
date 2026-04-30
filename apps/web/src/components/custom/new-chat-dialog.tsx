@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search, MessageCircle } from "lucide-react";
-import { USERS, CURRENT_USER_ID } from "@/lib/chat-data";
+import type { User } from "@/lib/chat-data";
+import { CURRENT_USER_ID } from "@/lib/chat-data";
+import { useUsers } from "@/lib/user-context";
 import { initials } from "@/lib/format";
 
 type Props = {
@@ -19,7 +21,8 @@ type Props = {
 
 export function NewChatDialog({ open, onOpenChange, onStartChat }: Props) {
   const [query, setQuery] = useState("");
-  const users = Object.values(USERS).filter(
+  const users = Object.values(useUsers()) as User[];
+  const filteredUsers = users.filter(
     (u) =>
       u.id !== CURRENT_USER_ID &&
       u.name.toLowerCase().includes(query.toLowerCase()),
@@ -49,7 +52,7 @@ export function NewChatDialog({ open, onOpenChange, onStartChat }: Props) {
         </div>
 
         <ul className="max-h-80 overflow-y-auto px-2 py-2">
-          {users.map((u) => (
+          {filteredUsers.map((u) => (
             <li key={u.id}>
               <button
                 onClick={() => {
@@ -83,7 +86,7 @@ export function NewChatDialog({ open, onOpenChange, onStartChat }: Props) {
               </button>
             </li>
           ))}
-          {users.length === 0 && (
+          {filteredUsers.length === 0 && (
             <li className="px-3 py-8 text-center text-sm text-muted-foreground">
               No people match “{query}”.
             </li>

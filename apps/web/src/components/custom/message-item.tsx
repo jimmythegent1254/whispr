@@ -9,7 +9,8 @@ import {
   X,
 } from "lucide-react";
 import type { Message } from "@/lib/chat-data";
-import { USERS, CURRENT_USER_ID, REACTION_EMOJIS } from "@/lib/chat-data";
+import { CURRENT_USER_ID, REACTION_EMOJIS } from "@/lib/chat-data";
+import { useUsers } from "@/lib/user-context";
 import { cn, formatTime, initials } from "@/lib/format";
 
 type Props = {
@@ -29,7 +30,8 @@ export function MessageItem({
   onDelete,
   onPin,
 }: Props) {
-  const user = USERS[message.userId];
+  const users = useUsers();
+  const user = users[message.userId];
   const isMe = message.userId === CURRENT_USER_ID;
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(message.content);
@@ -133,7 +135,7 @@ export function MessageItem({
                 <button
                   key={r.emoji}
                   onClick={() => onReact(r.emoji)}
-                  title={r.users.map((u) => USERS[u]?.name ?? u).join(", ")}
+                  title={r.users.map((u) => users[u]?.name ?? u).join(", ")}
                   className={cn(
                     "flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors",
                     mine

@@ -16,7 +16,7 @@ export type Message = {
 export type User = {
   id: string;
   name: string;
-  avatarColor: string;
+  avatarColor?: string;
   online?: boolean;
   title?: string;
 };

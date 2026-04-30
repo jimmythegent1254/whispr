@@ -1,36 +1,76 @@
 import { store, generateId } from "../store";
 
 export function getChannels(workspaceId: string) {
-  return store.channels.filter((c) => c.workspaceId === workspaceId);
+  return store.conversations.filter(
+    (c) => c.workspaceId === workspaceId && c.type === "channel",
+  );
 }
 
-export function createChannel(workspaceId: string, name: string) {
+export function createChannel(
+  workspaceId: string,
+  name: string,
+  creatorId: string,
+) {
   const channel = {
     id: generateId(),
     workspaceId,
+    type: "channel" as const,
     name,
   };
 
-  store.channels.push(channel);
+  store.conversations.push(channel);
+  store.conversationMembers.push({
+    conversationId: channel.id,
+    userId: creatorId,
+  });
+
   return channel;
 }
 
-export function getChannelMessages(channelId: string) {
-  return store.messages.filter((m) => m.channelId === channelId);
+export function getChannelMessages(conversationId: string) {
+  return store.messages.filter((m) => m.conversationId === conversationId);
+}
+
+export function addChannelMember(
+  conversationId: string,
+  userId: string,
+  requesterId: string,
+) {
+  const isMember = store.conversationMembers.some(
+    (m) => m.conversationId === conversationId && m.userId === requesterId,
+  );
+
+  if (!isMember) {
+    throw new Error("Unauthorized");
+  }
+
+  const alreadyAdded = store.conversationMembers.some(
+    (m) => m.conversationId === conversationId && m.userId === userId,
+  );
+  if (alreadyAdded) {
+    return { conversationId, userId };
+  }
+
+  store.conversationMembers.push({
+    conversationId,
+    userId,
+  });
+
+  return { conversationId, userId };
 }
 
 export function sendChannelMessage({
-  channelId,
+  conversationId,
   senderId,
   content,
 }: {
-  channelId: string;
+  conversationId: string;
   senderId: string;
   content: string;
 }) {
-  // permission check
-  const isMember = store.channelMembers.some(
-    (m) => m.channelId === channelId && m.userId === senderId,
+  // permission check (membership)
+  const isMember = store.conversationMembers.some(
+    (m) => m.conversationId === conversationId && m.userId === senderId,
   );
 
   if (!isMember) {
@@ -39,10 +79,10 @@ export function sendChannelMessage({
 
   const message = {
     id: generateId(),
-    channelId,
+    conversationId,
     senderId,
     content,
-    createdAt: new Date(),
+    createdAt: Date.now(),
   };
 
   store.messages.push(message);

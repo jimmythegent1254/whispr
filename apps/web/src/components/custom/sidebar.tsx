@@ -9,7 +9,8 @@ import {
   Edit3,
 } from "lucide-react";
 import type { Conversation, User } from "@/lib/chat-data";
-import { USERS, CURRENT_USER_ID } from "@/lib/chat-data";
+import { CURRENT_USER_ID } from "@/lib/chat-data";
+import { useUsers } from "@/lib/user-context";
 import { cn, initials } from "@/lib/format";
 
 type Props = {
@@ -37,6 +38,7 @@ export function Sidebar({
   const [dmOpen, setDmOpen] = useState(true);
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
+  const users = useUsers();
 
   const channels = conversations.filter((c) => c.type === "channel");
   const dms = conversations.filter((c) => c.type === "dm");
@@ -199,7 +201,7 @@ export function Sidebar({
             <ul className="mt-1 space-y-0.5">
               {dms.map((c) => {
                 const other = c.members.find((id) => id !== CURRENT_USER_ID);
-                const u = other ? USERS[other] : null;
+                const u = other ? users[other] : null;
                 return (
                   <li key={c.id}>
                     <button

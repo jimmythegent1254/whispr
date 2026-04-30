@@ -9,7 +9,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Conversation } from "@/lib/chat-data";
-import { USERS, CURRENT_USER_ID } from "@/lib/chat-data";
+import { CURRENT_USER_ID } from "@/lib/chat-data";
+import { useUsers } from "@/lib/user-context";
 import { initials } from "@/lib/format";
 
 type Section = "about" | "members" | "settings";
@@ -20,9 +21,10 @@ export function DetailsPanel({ conversation }: { conversation: Conversation }) {
     members: true,
     settings: false,
   });
+  const users = useUsers();
   const isDM = conversation.type === "dm";
   const other = isDM
-    ? USERS[conversation.members.find((m) => m !== CURRENT_USER_ID) ?? ""]
+    ? users[conversation.members.find((m) => m !== CURRENT_USER_ID) ?? ""]
     : null;
   const pinned = conversation.messages.filter((m) => m.pinned);
 
@@ -115,7 +117,7 @@ export function DetailsPanel({ conversation }: { conversation: Conversation }) {
         >
           <ul className="space-y-1">
             {conversation.members.map((id) => {
-              const u = USERS[id];
+              const u = users[id];
               if (!u) return null;
               return (
                 <li
