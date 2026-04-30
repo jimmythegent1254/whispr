@@ -5,9 +5,10 @@ import {
   ChevronDown,
   ChevronRight,
   Lock,
-  MessageCircle,
+  Settings,
+  Edit3,
 } from "lucide-react";
-import type { Conversation } from "@/lib/chat-data";
+import type { Conversation, User } from "@/lib/chat-data";
 import { USERS, CURRENT_USER_ID } from "@/lib/chat-data";
 import { cn, initials } from "@/lib/format";
 
@@ -16,6 +17,10 @@ type Props = {
   activeId: string;
   onSelect: (id: string) => void;
   onCreateChannel: (name: string) => void;
+  onOpenSettings: () => void;
+  onOpenNewChat: () => void;
+  currentUser: User;
+  currentAvatarUrl?: string;
 };
 
 export function Sidebar({
@@ -23,6 +28,10 @@ export function Sidebar({
   activeId,
   onSelect,
   onCreateChannel,
+  onOpenSettings,
+  onOpenNewChat,
+  currentUser,
+  currentAvatarUrl,
 }: Props) {
   const [chOpen, setChOpen] = useState(true);
   const [dmOpen, setDmOpen] = useState(true);
@@ -49,18 +58,52 @@ export function Sidebar({
           <h1 className="text-base font-bold tracking-tight">Whispr</h1>
           <div className="mt-0.5 flex items-center gap-1.5 text-xs text-sidebar-foreground/60">
             <span className="h-1.5 w-1.5 rounded-full bg-online" />
-            <span>{USERS[CURRENT_USER_ID].name}</span>
+            <span>{currentUser.name}</span>
           </div>
         </div>
-        <div
-          className="flex h-8 w-8 items-center justify-center rounded-md text-xs font-semibold"
-          style={{
-            background: USERS[CURRENT_USER_ID].avatarColor,
-            color: "oklch(0.18 0.012 280)",
-          }}
+        <button
+          onClick={onOpenSettings}
+          className="h-8 w-8 overflow-hidden rounded-md ring-2 ring-transparent transition-all hover:ring-sidebar-border"
+          style={
+            !currentAvatarUrl
+              ? { background: currentUser.avatarColor }
+              : undefined
+          }
+          aria-label="Open settings"
         >
-          {initials(USERS[CURRENT_USER_ID].name)}
-        </div>
+          {currentAvatarUrl ? (
+            <img
+              src={currentAvatarUrl}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span
+              className="flex h-full w-full items-center justify-center text-xs font-semibold"
+              style={{ color: "oklch(0.18 0.012 280)" }}
+            >
+              {initials(currentUser.name)}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Quick actions */}
+      <div className="flex items-center gap-1 border-b border-sidebar-border px-2 py-2">
+        <button
+          onClick={onOpenNewChat}
+          className="flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/85 hover:bg-sidebar-border/50"
+        >
+          <Edit3 className="h-3.5 w-3.5" />
+          New message
+        </button>
+        <button
+          onClick={onOpenSettings}
+          className="rounded-md p-2 text-sidebar-foreground/70 hover:bg-sidebar-border/50 hover:text-sidebar-foreground"
+          aria-label="Settings"
+        >
+          <Settings className="h-4 w-4" />
+        </button>
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto px-2 py-3">

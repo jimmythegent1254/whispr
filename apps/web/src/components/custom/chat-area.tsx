@@ -14,6 +14,7 @@ type Props = {
   onEdit: (messageId: string, content: string) => void;
   onDelete: (messageId: string) => void;
   onPin: (messageId: string) => void;
+  onOpenMembers?: () => void;
   rightAction?: ReactNode;
 };
 
@@ -25,6 +26,7 @@ export function ChatArea({
   onEdit,
   onDelete,
   onPin,
+  onOpenMembers,
   rightAction,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -119,9 +121,14 @@ export function ChatArea({
               <Pin className="h-3.5 w-3.5" /> {pinnedCount}
             </span>
           )}
-          <span className="hidden items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent sm:flex">
+          <button
+            onClick={onOpenMembers}
+            disabled={isDM}
+            className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label="View members"
+          >
             <Users className="h-3.5 w-3.5" /> {conversation.members.length}
-          </span>
+          </button>
           {rightAction}
         </div>
       </header>

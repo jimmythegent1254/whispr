@@ -9,6 +9,9 @@ import {
 import { Sidebar } from "@/components/custom/sidebar";
 import { ChatArea } from "@/components/custom/chat-area";
 import { DetailsPanel } from "@/components/custom/details-panel";
+import { MembersDialog } from "@/components/custom/members-dialog";
+import { SettingsDialog } from "@/components/custom/settings-dialog";
+import { NewChatDialog } from "@/components/custom/new-chat-dialog";
 import { Menu, PanelRight } from "lucide-react";
 
 export function Home() {
@@ -19,6 +22,23 @@ export function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(true);
   const [typingUserId, setTypingUserId] = useState<string | null>(null);
+  const [membersOpen, setMembersOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [newChatOpen, setNewChatOpen] = useState(false);
+  const [profile, setProfile] = useState({
+    name: USERS[CURRENT_USER_ID].name,
+    title: USERS[CURRENT_USER_ID].title,
+    avatarUrl: undefined as string | undefined,
+  });
+
+  const currentUser = useMemo(
+    () => ({
+      ...USERS[CURRENT_USER_ID],
+      name: profile.name,
+      title: profile.title,
+    }),
+    [profile.name, profile.title],
+  );
 
   const active = useMemo(
     () => conversations.find((c) => c.id === activeId) ?? conversations[0],
@@ -142,6 +162,38 @@ export function Home() {
     setActiveId(id);
   };
 
+  const addMember = (userId: string) => {
+    updateConversation(active.id, (c) =>
+      c.members.includes(userId)
+        ? c
+        : { ...c, members: [...c.members, userId] },
+    );
+  };
+
+  const startDM = (userId: string) => {
+    const existing = conversations.find(
+      (c) =>
+        c.type === "dm" && c.members.length === 2 && c.members.includes(userId),
+    );
+    if (existing) {
+      setActiveId(existing.id);
+      setSidebarOpen(false);
+      return;
+    }
+    const u = USERS[userId];
+    const id = `dm_${userId}_${Date.now()}`;
+    const dm: Conversation = {
+      id,
+      type: "dm",
+      name: u?.name ?? "Direct message",
+      members: [CURRENT_USER_ID, userId],
+      messages: [],
+    };
+    setConversations((prev) => [...prev, dm]);
+    setActiveId(id);
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="dark flex h-screen w-full overflow-hidden bg-background text-foreground">
       {/* Mobile sidebar overlay */}
@@ -165,6 +217,10 @@ export function Home() {
             setSidebarOpen(false);
           }}
           onCreateChannel={createChannel}
+          onOpenSettings={() => setSettingsOpen(true)}
+          onOpenNewChat={() => setNewChatOpen(true)}
+          currentUser={currentUser}
+          currentAvatarUrl={profile.avatarUrl}
         />
       </aside>
 
@@ -188,6 +244,7 @@ export function Home() {
           onEdit={editMessage}
           onDelete={deleteMessage}
           onPin={togglePin}
+          onOpenMembers={() => setMembersOpen(true)}
           rightAction={
             <button
               onClick={() => setDetailsOpen((v) => !v)}
@@ -205,6 +262,34 @@ export function Home() {
           <DetailsPanel conversation={active} />
         </aside>
       )}
+
+      {active.type === "channel" && (
+        <MembersDialog
+          open={membersOpen}
+          onOpenChange={setMembersOpen}
+          conversation={active}
+          onAddMember={addMember}
+        />
+      )}
+
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        user={currentUser}
+        onSave={(updates) =>
+          setProfile((p) => ({
+            name: updates.name,
+            title: updates.title || p.title,
+            avatarUrl: updates.avatarUrl ?? p.avatarUrl,
+          }))
+        }
+      />
+
+      <NewChatDialog
+        open={newChatOpen}
+        onOpenChange={setNewChatOpen}
+        onStartChat={startDM}
+      />
     </div>
   );
 }
